@@ -1,38 +1,33 @@
 from aiogram import Router, F
-from aiogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
-from database import get_user
+from aiogram.types import Message, CallbackQuery
+from aiogram.filters import CommandStart
+from database import add_or_update_user
+from keyboards_main_menu import get_main_keyboard
 from config import PROJECT_NAME
 
 router = Router()
 
-@router.callback_query(F.data == "my_profile")
-async def show_profile(callback: CallbackQuery):
-    user_data = get_user(callback.from_user.id)
+@router.message(CommandStart())
+async def cmd_start(message: Message):
+    user_id = message.from_user.id
+    username = message.from_user.username or ""
+    full_name = message.from_user.full_name or ""
     
-    sub_url = user_data.get("subscription_url") if user_data else None
-    expire_date = user_data.get("expire_date") if user_data else None
+    add_or_update_user(user_id, username, full_name)
     
-    if sub_url:
-        status_str = "✅ Активна"
-        sub_info = (
-            f"🔗 **Ваша подписка:**\n`{sub_url}`\n\n"
-            f"⏳ Действует до: **{expire_date or 'Активна'}**"
-        )
-    else:
-        status_str = "❌ Нет подписки"
-        sub_info = "У вас пока нет активного ключа."
-
-    text = (
-        f"👤 **Профиль пользователя — {PROJECT_NAME}**\n\n"
-        f"🆔 Ваш ID: `{callback.from_user.id}`\n"
-        f"📊 Статус: {status_str}\n\n"
-        f"{sub_info}"
+    welcome_text = (
+        f"🌐 **Добро пожаловать в {PROJECT_NAME}!**\n\n"
+        f"⚡ Высокоскоростной, приватный и обходящий любые блокировки VPN.\n"
+        f"💰 Цены всего **от 79 руб/мес**!\n\n"
+        f"Выберите нужное действие ниже:"
     )
-    
-    kbd = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🚀 Оформить / Продлить (от 79 ₽)", callback_data="buy_subscription")],
-        [InlineKeyboardButton(text="« Назад в меню", callback_data="main_menu")]
-    ])
-    
-    await callback.message.edit_text(text, reply_markup=kbd, parse_mode="Markdown")
+    await message.answer(welcome_text, reply_markup=get_main_keyboard(), parse_mode="Markdown")
+
+@router.callback_query(F.data == "main_menu")
+async def back_to_main_menu(callback: CallbackQuery):
+    welcome_text = (
+        f"🏠 **Главное меню {PROJECT_NAME}**\n\n"
+        f"Выберите нужный раздел:"
+    )
+    await callback.message.edit_text(welcome_text, reply_markup=get_main_keyboard(), parse_mode="Markdown")
     await callback.answer()
