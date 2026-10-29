@@ -7,9 +7,7 @@ router = Router()
 @router.callback_query(F.data == "documents")
 async def show_documents(callback: CallbackQuery):
     text = (
-        "⚖️ **Документы сервиса OMNIRO VPN**
-
-"
+        "⚖️ **Документы сервиса OMNIRO VPN**\n\n"
         "Нажимая кнопки ниже, вы можете ознакомиться с официальной "
         "документацией проекта:"
     )
