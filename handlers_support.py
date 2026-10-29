@@ -13,7 +13,7 @@ async def show_support(callback: CallbackQuery):
         "Наш саппорт на связи!"
     )
     kbd = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="👨‍💻 Связаться с поддержкой", url="https://t.me/kakooi_support")],
+        [InlineKeyboardButton(text="👨‍💻 Связаться с поддержкой", url="https://t.me/ausxhmsklife")],
         [InlineKeyboardButton(text="« Назад в меню", callback_data="main_menu")]
     ])
     await callback.message.edit_text(text, reply_markup=kbd, parse_mode="Markdown")
