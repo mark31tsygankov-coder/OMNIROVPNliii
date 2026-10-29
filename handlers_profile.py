@@ -14,23 +14,18 @@ async def show_profile(callback: CallbackQuery):
     
     if sub_url:
         status_str = "✅ Активна"
-        sub_info = f"🔗 **Ваша подписка:**
-`{sub_url}`
-
-⏳ Действует до: **{expire_date or 'Активна'}**"
+        sub_info = (
+            f"🔗 **Ваша подписка:**\n`{sub_url}`\n\n"
+            f"⏳ Действует до: **{expire_date or 'Активна'}**"
+        )
     else:
         status_str = "❌ Нет подписки"
         sub_info = "У вас пока нет активного ключа."
 
     text = (
-        f"👤 **Профиль пользователя — {PROJECT_NAME}**
-
-"
-        f"🆔 Ваш ID: `{callback.from_user.id}`
-"
-        f"📊 Статус: {status_str}
-
-"
+        f"👤 **Профиль пользователя — {PROJECT_NAME}**\n\n"
+        f"🆔 Ваш ID: `{callback.from_user.id}`\n"
+        f"📊 Статус: {status_str}\n\n"
         f"{sub_info}"
     )
     
